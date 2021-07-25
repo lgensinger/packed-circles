@@ -15,7 +15,7 @@ The following values can be set via environment or passed into the class for a g
 
 ```bash
 # install package
-npm install @happyaccident/visualization
+npm install @lgensinger/visualization
 ```
 
 ## PackedCircles
