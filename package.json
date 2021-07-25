@@ -1,5 +1,5 @@
 {
-  "name": "@happyaccident/visualization",
+  "name": "@lgensinger/visualization",
   "version": "0.0.1",
   "type": "module",
   "description": "ES6 d3.js visualization",
