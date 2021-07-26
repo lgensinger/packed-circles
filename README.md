@@ -22,7 +22,7 @@ The following values can be set via environment or passed into the class.
 
 ```bash
 # install package
-npm install @lgv/visualization
+npm install @lgv/packed-cirlces
 ```
 
 ## PackedCircles
@@ -42,9 +42,11 @@ The following values are the expected input data structure.
 ]
 ```
 
-### Quickstart
+### Use Module
 
 ```bash
+import { PackedCircles } from "@lgv/packed-circles";
+
 // initialize
 const pc = new PackedCircles(data);
 
