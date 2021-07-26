@@ -84,7 +84,7 @@ test("render", t => {
     pc.render(document.body);
 
     // get generated element
-    let artboard = document.querySelector(".lg-packed-circles");
+    let artboard = document.querySelector(".lgv-packed-circles");
 
     t.true(artboard !== undefined);
     t.true(artboard.nodeName == "svg");
@@ -177,7 +177,7 @@ test("render_params", t => {
     pc.render(document.body);
 
     // get generated element
-    let artboard = document.querySelector(".lg-packed-circles");
+    let artboard = document.querySelector(".lgv-packed-circles");
 
     t.true(artboard !== undefined);
     t.true(artboard.nodeName == "svg");

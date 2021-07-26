@@ -99,7 +99,7 @@ class PackedCircles {
         let artboard = select(domNode)
             .append("svg")
             .attr("viewBox", `0 0 ${this.width} ${this.height}`)
-            .attr("class", "lg-packed-circles");
+            .attr("class", "lgv-packed-circles");
 
         // generate nodes
         let node = artboard
