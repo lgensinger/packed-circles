@@ -34,10 +34,12 @@ The following values are the expected input data structure.
 ```json
 [
     {
-        id: "some|path", value: 1
+        id: "some|path",
+        value: 1
     },
     {
-        id: "some", value: 3
+        id: "some",
+        value: 3
     }
 ]
 ```
