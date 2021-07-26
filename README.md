@@ -9,7 +9,7 @@ Style is expected to be addressed via css. The top-level svg is assigned a class
 
 ## Environment Variables
 
-The following values can be set via environment or passed into the class for a given visualization.
+The following values can be set via environment or passed into the class.
 
 | Name | Type | Description |
 | :-- | :-- | :-- |
@@ -29,7 +29,18 @@ npm install @lgv/visualization
 
 ### Data Format
 
-The following values are the expected input data structure for a given visualization.
+The following values are the expected input data structure.
+
+```json
+[
+    {
+        id: "some|path", value: 1
+    },
+    {
+        id: "some", value: 3
+    }
+]
+```
 
 ### Quickstart
 
