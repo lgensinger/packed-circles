@@ -1,8 +1,8 @@
 {
-  "name": "@lgensinger/visualization",
+  "name": "@lgv/packed-circles",
   "version": "0.0.1",
   "type": "module",
-  "description": "ES6 d3.js visualization",
+  "description": "ES6 d3.js packed circles visualization",
   "main": "src/index.js",
   "directories": {
     "test": "tests"
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/lgensinger/visualization.git"
+    "url": "https://github.com/lgensinger/packed-circles.git"
   },
   "keywords": [
     "visualization",
@@ -23,9 +23,9 @@
   "author": "lgensinger",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/lgensinger/visualization/issues"
+    "url": "https://github.com/lgensinger/packed-circles/issues"
   },
-  "homepage": "https://github.com/lgensinger/visualization#readme",
+  "homepage": "https://github.com/lgensinger/packed-circles#readme",
   "devDependencies": {
     "@ava/babel": "^2.0.0",
     "ava": "^3.15.0",

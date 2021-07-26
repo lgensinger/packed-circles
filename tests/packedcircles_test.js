@@ -1,7 +1,7 @@
 import test from "ava";
 
 import { configurationDimension, configurationLayout } from "../src/configuration.js";
-import { PackedCircles } from "../src/packed-circles/index.js";
+import { PackedCircles } from "../src/index.js";
 
 let testData = [{id: "some|path", value: 1}, {id: "some", value: 3}];
 

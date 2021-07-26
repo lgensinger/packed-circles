@@ -117,22 +117,16 @@ class PackedCircles {
             .attr("fill", d => d.children ? this.style(d.depth) : "white")
             .style("cursor", "pointer")
             .on("mouseover", e => {
-
                 // set node
                 node.attr("opacity", x =>  mouseOverIds(e.target.id, this.dataSource).includes(x.id) ? 1 : 0.15);
-
                 // set links
                 label.attr("opacity", x => mouseOverIds(e.target.id, this.dataSource).includes(x.id) ? 1 : 0.15);
-
             })
             .on("mouseout", e => {
-
                 // reset nodes
                 node.attr("opacity", 1);
-
                 // reset links
                 label.attr("opacity", 1);
-
             });
 
         // generate text label

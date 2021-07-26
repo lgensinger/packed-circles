@@ -17,7 +17,6 @@ const webpackConfig = {
 
     plugins: [
         new HtmlWebpackPlugin({
-            title: "Output Management",
             title: "Development",
         }),
         new webpack.DefinePlugin({
