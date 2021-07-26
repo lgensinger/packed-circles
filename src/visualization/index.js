@@ -110,6 +110,7 @@ class PackedCircles {
 
         // position/style nodes
         node
+            .attr("class", "lgv-node")
             .attr("id", d => this.extractLabel(d))
             .attr("cx", d => d.x)
             .attr("cy", d => d.y)
@@ -119,13 +120,13 @@ class PackedCircles {
             .on("mouseover", e => {
                 // set node
                 node.attr("opacity", x =>  mouseOverIds(e.target.id, this.dataSource).includes(x.id) ? 1 : 0.15);
-                // set links
+                // set labels
                 label.attr("opacity", x => mouseOverIds(e.target.id, this.dataSource).includes(x.id) ? 1 : 0.15);
             })
             .on("mouseout", e => {
                 // reset nodes
                 node.attr("opacity", 1);
-                // reset links
+                // reset labels
                 label.attr("opacity", 1);
             });
 
@@ -138,6 +139,7 @@ class PackedCircles {
 
         // position/style labels
         label
+            .attr("class", "lgv-label")
             .attr("x", d => d.x)
             .attr("y", d => d.y)
             .text(d => this.extractLabel(d));
