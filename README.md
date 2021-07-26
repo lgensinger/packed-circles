@@ -22,7 +22,7 @@ The following values can be set via environment or passed into the class.
 
 ```bash
 # install package
-npm install @lgv/packed-cirlces
+npm install @lgv/packed-circles
 ```
 
 ## PackedCircles
