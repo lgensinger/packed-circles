@@ -22,11 +22,15 @@ class PackedCircles {
         this.paddingCircles = paddingCircles;
         this.width = width;
 
+        // condition data
+        this.dataFormatted = this.data;
+        this.nodes = this.dataFormatted ? this.dataFormatted.leaves().map(d => Object.assign({ id: d.data.id })) : null;
+
     }
 
     /**
      * Condition data for visualization requirements.
-     * @returns A xx.
+     * @returns An array of self-referencing nodes.
      */
     get data() {
 
@@ -93,8 +97,6 @@ class PackedCircles {
      */
     render(domNode) {
 
-        let root = this.data;
-
         // generate svg artboard
         let artboard = select(domNode)
             .append("svg")
@@ -104,7 +106,7 @@ class PackedCircles {
         // generate nodes
         let node = artboard
             .selectAll("circle")
-            .data(root ? root.descendants() : [])
+            .data(this.dataFormatted ? this.dataFormatted.descendants() : [])
             .enter()
             .append("circle");
 
@@ -133,7 +135,7 @@ class PackedCircles {
         // generate text label
         const label = artboard
             .selectAll("text")
-            .data(root ? root.descendants() : [])
+            .data(this.dataFormatted ? this.dataFormatted.descendants() : [])
             .enter()
             .append("text");
 
