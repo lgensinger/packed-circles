@@ -19,12 +19,26 @@ class PackedCircles {
         // update self
         this.dataSource = data;
         this.height = height;
+        this.label = null;
+        this.mouseOut = e => {
+            // reset nodes
+            this.node.attr("opacity", 1);
+            // reset labels
+            this.label.attr("opacity", 1);
+        };
+        this.mouseOver = e => {
+            // set node
+            this.node.attr("opacity", x =>  mouseOverIds(e.target.id, this.dataSource).includes(x.id) ? 1 : 0.15);
+            // set labels
+            this.label.attr("opacity", x => mouseOverIds(e.target.id, this.dataSource).includes(x.id) ? 1 : 0.15);
+        };
+        this.node = null;
         this.paddingCircles = paddingCircles;
         this.width = width;
 
         // condition data
         this.dataFormatted = this.data;
-        this.nodes = this.dataFormatted ? this.dataFormatted.leaves().map(d => Object.assign({ id: d.data.id })) : null;
+        this.nodes = this.dataFormatted ? this.dataFormatted.leaves().map(d => Object.assign({ id: d.data.id, label: this.extractLabel(d.data) })) : null;
 
     }
 
@@ -104,14 +118,14 @@ class PackedCircles {
             .attr("class", "lgv-packed-circles");
 
         // generate nodes
-        let node = artboard
+        this.node = artboard
             .selectAll("circle")
             .data(this.dataFormatted ? this.dataFormatted.descendants() : [])
             .enter()
             .append("circle");
 
         // position/style nodes
-        node
+        this.node
             .attr("class", "lgv-node")
             .attr("id", d => this.extractLabel(d))
             .attr("cx", d => d.x)
@@ -119,28 +133,18 @@ class PackedCircles {
             .attr("r", d => d.r)
             .attr("fill", d => d.children ? this.style(d.depth) : "white")
             .style("cursor", "pointer")
-            .on("mouseover", e => {
-                // set node
-                node.attr("opacity", x =>  mouseOverIds(e.target.id, this.dataSource).includes(x.id) ? 1 : 0.15);
-                // set labels
-                label.attr("opacity", x => mouseOverIds(e.target.id, this.dataSource).includes(x.id) ? 1 : 0.15);
-            })
-            .on("mouseout", e => {
-                // reset nodes
-                node.attr("opacity", 1);
-                // reset labels
-                label.attr("opacity", 1);
-            });
+            .on("mouseover", this.mouseOver)
+            .on("mouseout", this.mouseOut);
 
         // generate text label
-        const label = artboard
+        this.label = artboard
             .selectAll("text")
             .data(this.dataFormatted ? this.dataFormatted.descendants() : [])
             .enter()
             .append("text");
 
         // position/style labels
-        label
+        this.label
             .attr("class", "lgv-label")
             .attr("x", d => d.x)
             .attr("y", d => d.y)
