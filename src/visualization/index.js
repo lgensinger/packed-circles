@@ -27,10 +27,12 @@ class PackedCircles {
             this.label.attr("opacity", 1);
         };
         this.mouseOver = e => {
+            // get id
+            let id = e.target.attributes["data-node-label"].value;
             // set node
-            this.node.attr("opacity", x =>  mouseOverIds(e.target.id, this.dataSource).includes(x.id) ? 1 : 0.15);
+            this.node.attr("opacity", x =>  mouseOverIds(id, this.dataSource).includes(x.id) ? 1 : 0.15);
             // set labels
-            this.label.attr("opacity", x => mouseOverIds(e.target.id, this.dataSource).includes(x.id) ? 1 : 0.15);
+            this.label.attr("opacity", x => mouseOverIds(id, this.dataSource).includes(x.id) ? 1 : 0.15);
         };
         this.node = null;
         this.paddingCircles = paddingCircles;
@@ -38,7 +40,7 @@ class PackedCircles {
 
         // condition data
         this.dataFormatted = this.data;
-        this.nodes = this.dataFormatted ? this.dataFormatted.leaves().map(d => Object.assign({ id: d.data.id, label: this.extractLabel(d.data) })) : null;
+        this.nodes = this.dataFormatted ? [...new Set(this.dataFormatted.leaves().map(d => this.extractLabel(d.data)))].sort((a,b) => a.toLowerCase().localeCompare(b.toLowerCase())) : null;
 
     }
 
@@ -127,7 +129,7 @@ class PackedCircles {
         // position/style nodes
         this.node
             .attr("class", "lgv-node")
-            .attr("id", d => this.extractLabel(d))
+            .attr("data-node-label", d => this.extractLabel(d))
             .attr("cx", d => d.x)
             .attr("cy", d => d.y)
             .attr("r", d => d.r)
@@ -147,7 +149,7 @@ class PackedCircles {
         this.label
             .attr("class", "lgv-label")
             .attr("x", d => d.x)
-            .attr("y", d => d.y)
+            .attr("y", d => d.children ? (d.y - (d.r * 0.9)) : d.y)
             .text(d => this.extractLabel(d));
 
     }
