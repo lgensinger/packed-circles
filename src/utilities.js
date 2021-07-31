@@ -3,15 +3,23 @@ import { configurationParse } from "./configuration.js";
 /**
  * Mouse over to toggle attributes across node collections.
  * @param {array} data - objects where each represents discrete datum
- * @param {string} target - active item label/node id
+ * @param {array} selected - each item is a string where each represents a node label
  * @returns An array of strings where each represents a node or link id which matches the active item.
  */
-function mouseOverIds(target, data) {
+function mouseOverIds(selected, data) {
 
     let ids = [];
 
     // generate list of links/nodes match id
-    let matches = data.filter(d => d.id.includes(target)).map(d => d.id).flat();
+    let matches = [];
+
+    // loop through selected node labels
+    for (const label of selected) {
+
+        // filter for matches
+        matches = matches.concat(data.filter(d => d.id.includes(label)).map(d => d.id).flat());
+
+    }
 
     // loop through matching items
     matches.forEach(hierarchyPath => {

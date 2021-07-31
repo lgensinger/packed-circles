@@ -1,6 +1,4 @@
 import { pack, stratify } from "d3-hierarchy";
-import { interpolateHcl } from "d3-interpolate";
-import { scaleLinear } from "d3-scale";
 import { select } from "d3-selection";
 
 import { configurationDimension, configurationLayout, configurationParse } from "../configuration.js";
@@ -20,20 +18,8 @@ class PackedCircles {
         this.dataSource = data;
         this.height = height;
         this.label = null;
-        this.mouseOut = e => {
-            // reset nodes
-            this.node.attr("opacity", 1);
-            // reset labels
-            this.label.attr("opacity", 1);
-        };
-        this.mouseOver = e => {
-            // get id
-            let id = e.target.attributes["data-node-label"].value;
-            // set node
-            this.node.attr("opacity", x =>  mouseOverIds(id, this.dataSource).includes(x.id) ? 1 : 0.15);
-            // set labels
-            this.label.attr("opacity", x => mouseOverIds(id, this.dataSource).includes(x.id) ? 1 : 0.15);
-        };
+        this.mouseOut = e => this.reset();
+        this.mouseOver = e => this.setActive([e.target.attributes["data-node-label"].value]);
         this.node = null;
         this.paddingCircles = paddingCircles;
         this.width = width;
@@ -88,14 +74,29 @@ class PackedCircles {
     }
 
     /**
-     * Construct style.
-     * @returns A d3 color function.
+     * Position and minimally style labels in SVG dom element.
      */
-    get style() {
-        return scaleLinear()
-            .domain([0, 5])
-            .range(["hsl(20,0%,80%)", "hsl(200,30%,40%)"])
-            .interpolate(interpolateHcl);
+    configureLabels() {
+        this.label
+            .attr("class", "lgv-label")
+            .attr("x", d => d.x)
+            .attr("y", d => d.children ? (d.y - (d.r * 0.9)) : d.y)
+            .text(d => this.extractLabel(d));
+    }
+
+    /**
+     * Position and minimally style nodes in SVG dom element.
+     */
+    configureNodes() {
+        this.node
+            .attr("class", "lgv-node")
+            .attr("data-node-label", d => this.extractLabel(d))
+            .attr("data-node-depth", d => d.depth)
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
+            .attr("r", d => d.r)
+            .on("mouseover", this.mouseOver)
+            .on("mouseout", this.mouseOut);
     }
 
     /**
@@ -108,49 +109,89 @@ class PackedCircles {
     }
 
     /**
+     * Generate SVG artboard in the HTML DOM.
+     * @param {node} domNode - HTML node
+     * @returns A d3.js selection.
+     */
+    generateArtboard(domNode) {
+        return select(domNode)
+            .append("svg")
+            .attr("viewBox", `0 0 ${this.width} ${this.height}`)
+            .attr("class", "lgv-packed-circles");
+    }
+
+    /**
+     * Generate labels in SVG element.
+     * @param {node} artboard - d3.js SVG selection
+     */
+    generateLabels(artboard) {
+        return artboard
+            .selectAll("text")
+            .data(this.dataFormatted ? this.dataFormatted.descendants() : [])
+            .enter()
+            .append("text");
+    }
+
+    /**
+     * Generate nodes in SVG element.
+     * @param {node} artboard - d3.js SVG selection
+     * @returns A d3.js selection.
+     */
+    generateNodes(artboard) {
+        return artboard
+            .selectAll("circle")
+            .data(this.dataFormatted ? this.dataFormatted.descendants() : [])
+            .enter()
+            .append("circle");
+
+    }
+
+    /**
      * Render visualization.
      * @param {node} domNode - HTML node
      */
     render(domNode) {
 
         // generate svg artboard
-        let artboard = select(domNode)
-            .append("svg")
-            .attr("viewBox", `0 0 ${this.width} ${this.height}`)
-            .attr("class", "lgv-packed-circles");
+        let artboard = this.generateArtboard(domNode);
 
         // generate nodes
-        this.node = artboard
-            .selectAll("circle")
-            .data(this.dataFormatted ? this.dataFormatted.descendants() : [])
-            .enter()
-            .append("circle");
+        this.node = this.generateNodes(artboard);
 
         // position/style nodes
-        this.node
-            .attr("class", "lgv-node")
-            .attr("data-node-label", d => this.extractLabel(d))
-            .attr("cx", d => d.x)
-            .attr("cy", d => d.y)
-            .attr("r", d => d.r)
-            .attr("fill", d => d.children ? this.style(d.depth) : "white")
-            .style("cursor", "pointer")
-            .on("mouseover", this.mouseOver)
-            .on("mouseout", this.mouseOut);
+        this.configureNodes();
 
         // generate text label
-        this.label = artboard
-            .selectAll("text")
-            .data(this.dataFormatted ? this.dataFormatted.descendants() : [])
-            .enter()
-            .append("text");
+        this.label = this.generateLabels(artboard);
 
         // position/style labels
-        this.label
-            .attr("class", "lgv-label")
-            .attr("x", d => d.x)
-            .attr("y", d => d.children ? (d.y - (d.r * 0.9)) : d.y)
-            .text(d => this.extractLabel(d));
+        this.configureLabels();
+
+    }
+
+    /**
+     * Reset visualization to initial state.
+     */
+    reset() {
+
+        // reset nodes
+        this.node.attr("class", "lgv-node");
+
+        // reset labels
+        this.label.attr("class", "lgv-label");
+
+    }
+
+    /** Set nodes/labels to active state.
+     * @param {array} selected - each item is a string representing a node label
+     */
+    setActive(selected) {
+
+        // set node
+        this.node.attr("class", x =>  mouseOverIds(selected, this.dataSource).includes(x.id) ? "lgv-node active" : "lgv-node inactive");
+
+        // set labels
+        this.label.attr("class", x => mouseOverIds(selected, this.dataSource).includes(x.id) ? "lgv-label active" : "lgv-label inactive");
 
     }
 

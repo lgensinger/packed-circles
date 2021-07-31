@@ -1,6 +1,6 @@
 {
   "name": "@lgv/packed-circles",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "type": "module",
   "description": "ES6 d3.js packed circles visualization",
   "main": "src/index.js",
@@ -37,8 +37,6 @@
   },
   "dependencies": {
     "d3-hierarchy": "^3.0.1",
-    "d3-interpolate": "^3.0.1",
-    "d3-scale": "^4.0.0",
     "d3-selection": "^3.0.0"
   },
   "ava": {

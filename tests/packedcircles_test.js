@@ -3,15 +3,13 @@ import test from "ava";
 import { configurationDimension, configurationLayout } from "../src/configuration.js";
 import { PackedCircles } from "../src/index.js";
 
-let testData = [{id: "some|path", value: 1}, {id: "some", value: 3}];
-
 /******************** EMPTY VARIABLES ********************/
+
+// initialize
+let pc = new PackedCircles();
 
 // TEST INIT //
 test("init", t => {
-
-    // initialize
-    let pc = new PackedCircles();
 
     t.true(pc.height === configurationDimension.height);
     t.true(pc.paddingCircles === configurationLayout.paddingCircles);
@@ -22,46 +20,19 @@ test("init", t => {
 // TEST get DATA //
 test("get_data", t => {
 
-    // initialize
-    let pc = new PackedCircles();
-
-    // data formatting
-    let result = pc.data;
-
-    t.true(typeof(result) == "object");
+    t.true(typeof(pc.data) == "object");
 
 });
 
 // TEST get LAYOUT //
 test("get_layout", t => {
 
-    // initialize
-    let pc = new PackedCircles();
-
-    // layout formatting
-    let result = pc.layout;
-    t.true(typeof(result) == "function");
-
-});
-
-// TEST get STYLE //
-test("get_style", t => {
-
-    // initialize
-    let pc = new PackedCircles();
-
-    // style formatting
-    let result = pc.style;
-
-    t.true(typeof(result) == "function");
+    t.true(typeof(pc.layout) == "function");
 
 });
 
 // TEST EXTRACTLABEL //
 test("extractLabel", t => {
-
-    // initialize
-    let pc = new PackedCircles();
 
     // pull node label from id
     let result = pc.extractLabel(testData[0]);
@@ -76,9 +47,6 @@ test("render", t => {
 
     // clear document
     document.body.innerHTML = "";
-
-    // initialize
-    let pc = new PackedCircles();
 
     // render to dom
     pc.render(document.body);
@@ -98,66 +66,43 @@ test("render", t => {
 let testWidth = 300;
 let testHeight = 500;
 let testPadding = 5;
+let testData = [
+    {id: "some|path", value: 1},
+    {id: "some", value: 3}
+];
+
+// initialize
+let pcr = new PackedCircles(testData, testWidth, testHeight, testPadding);
+
 
 // TEST INIT //
 test("init_params", t => {
 
-    // initialize
-    let pc = new PackedCircles(testData, testWidth, testHeight, testPadding);
-
-    t.true(pc.height === testHeight);
-    t.true(pc.paddingCircles === testPadding);
-    t.true(pc.width === testWidth);
+    t.true(pcr.height === testHeight);
+    t.true(pcr.paddingCircles === testPadding);
+    t.true(pcr.width === testWidth);
 
 });
 
 // TEST get DATA //
 test("get_data_params", t => {
 
-    // initialize
-    let pc = new PackedCircles(testData, testWidth, testHeight, testPadding);
-
-    // data formatting
-    let result = pc.data;
-
-    t.true(typeof(result) == "object");
+    t.true(typeof(pcr.data) == "object");
 
 });
 
 // TEST get LAYOUT //
 test("get_layout_params", t => {
 
-    // initialize
-    let pc = new PackedCircles(testData, testWidth, testHeight, testPadding);
-
-    // layout formatting
-    let result = pc.layout;
-
-    t.true(typeof(result) == "function");
-
-});
-
-// TEST get STYLE //
-test("get_style_params", t => {
-
-    // initialize
-    let pc = new PackedCircles(testData, testWidth, testHeight, testPadding);
-
-    // style formatting
-    let result = pc.style;
-
-    t.true(typeof(result) == "function");
+    t.true(typeof(pcr.layout) == "function");
 
 });
 
 // TEST EXTRACTLABEL //
 test("extractLabel_params", t => {
 
-    // initialize
-    let pc = new PackedCircles(testData, testWidth, testHeight, testPadding);
-
     // pull node label from id
-    let result = pc.extractLabel(testData[0]);
+    let result = pcr.extractLabel(testData[0]);
 
     t.true(typeof(result) == "string");
     t.true(testData[0].id.includes(result));
@@ -170,11 +115,8 @@ test("render_params", t => {
     // clear document
     document.body.innerHTML = "";
 
-    // initialize
-    let pc = new PackedCircles(testData, testWidth, testHeight, testPadding);
-
     // render to dom
-    pc.render(document.body);
+    pcr.render(document.body);
 
     // get generated element
     let artboard = document.querySelector(".lgv-packed-circles");
