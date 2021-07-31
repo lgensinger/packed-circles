@@ -18,8 +18,6 @@ class PackedCircles {
         this.dataSource = data;
         this.height = height;
         this.label = null;
-        this.mouseOut = e => this.reset();
-        this.mouseOver = e => this.setActive([e.target.attributes["data-node-label"].value]);
         this.node = null;
         this.paddingCircles = paddingCircles;
         this.width = width;
@@ -94,9 +92,7 @@ class PackedCircles {
             .attr("data-node-depth", d => d.depth)
             .attr("cx", d => d.x)
             .attr("cy", d => d.y)
-            .attr("r", d => d.r)
-            .on("mouseover", this.mouseOver)
-            .on("mouseout", this.mouseOut);
+            .attr("r", d => d.r);
     }
 
     /**
