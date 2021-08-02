@@ -1,6 +1,6 @@
 import test from "ava";
 
-import { configurationDimension, configurationLayout } from "../src/configuration.js";
+import { configuration, configurationDimension, configurationLayout } from "../src/configuration.js";
 import { PackedCircles } from "../src/index.js";
 
 /******************** EMPTY VARIABLES ********************/
@@ -52,7 +52,7 @@ test("render", t => {
     pc.render(document.body);
 
     // get generated element
-    let artboard = document.querySelector(".lgv-packed-circles");
+    let artboard = document.querySelector(`.${configuration.name}`);
 
     t.true(artboard !== undefined);
     t.true(artboard.nodeName == "svg");
@@ -119,7 +119,7 @@ test("render_params", t => {
     pcr.render(document.body);
 
     // get generated element
-    let artboard = document.querySelector(".lgv-packed-circles");
+    let artboard = document.querySelector(`.${configuration.name}`);
 
     t.true(artboard !== undefined);
     t.true(artboard.nodeName == "svg");

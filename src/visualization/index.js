@@ -1,7 +1,7 @@
 import { pack, stratify } from "d3-hierarchy";
 import { select } from "d3-selection";
 
-import { configurationDimension, configurationLayout, configurationParse } from "../configuration.js";
+import { configuration, configurationDimension, configurationLayout, configurationParse } from "../configuration.js";
 import { mouseOverIds } from "../utilities.js";
 
 /**
@@ -66,8 +66,11 @@ class PackedCircles {
      * @returns A d3 pack layout function.
      */
     get layout() {
+
+        let radius = Math.min( ...[this.height, this.width]);
+
         return pack()
-            .size([this.width, this.height])
+            .size([radius, radius])
             .padding(this.paddingCircles);
     }
 
@@ -113,15 +116,15 @@ class PackedCircles {
         return select(domNode)
             .append("svg")
             .attr("viewBox", `0 0 ${this.width} ${this.height}`)
-            .attr("class", "lgv-packed-circles");
+            .attr("class", configuration.name);
     }
 
     /**
      * Generate labels in SVG element.
-     * @param {node} artboard - d3.js SVG selection
+     * @param {node} domNode - d3.js SVG selection
      */
-    generateLabels(artboard) {
-        return artboard
+    generateLabels(domNode) {
+        return domNode
             .selectAll("text")
             .data(this.dataFormatted ? this.dataFormatted.descendants() : [])
             .enter()
@@ -130,11 +133,11 @@ class PackedCircles {
 
     /**
      * Generate nodes in SVG element.
-     * @param {node} artboard - d3.js SVG selection
+     * @param {node} domNode - d3.js SVG selection
      * @returns A d3.js selection.
      */
-    generateNodes(artboard) {
-        return artboard
+    generateNodes(domNode) {
+        return domNode
             .selectAll("circle")
             .data(this.dataFormatted ? this.dataFormatted.descendants() : [])
             .enter()
