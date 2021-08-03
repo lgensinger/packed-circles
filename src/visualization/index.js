@@ -80,6 +80,7 @@ class PackedCircles {
     configureLabels() {
         this.label
             .attr("class", "lgv-label")
+            .attr("data-node-depth", d => d.depth)
             .attr("x", d => d.x)
             .attr("y", d => d.children ? (d.y - (d.r * 0.9)) : d.y)
             .text(d => this.extractLabel(d));
