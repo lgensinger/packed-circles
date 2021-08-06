@@ -94,6 +94,7 @@ class PackedCircles {
             .attr("class", "lgv-node")
             .attr("data-node-label", d => this.extractLabel(d))
             .attr("data-node-depth", d => d.depth)
+            .attr("data-node-children", d => d.children ? true : false)
             .attr("cx", d => d.x)
             .attr("cy", d => d.y)
             .attr("r", d => d.r);
