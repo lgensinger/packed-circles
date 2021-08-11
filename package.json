@@ -1,6 +1,6 @@
 {
   "name": "@lgv/packed-circles",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "type": "module",
   "description": "ES6 d3.js packed circles visualization",
   "main": "src/index.js",

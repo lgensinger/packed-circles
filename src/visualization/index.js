@@ -15,7 +15,9 @@ class PackedCircles {
     constructor(data, width=configurationDimension.width, height=configurationDimension.height, paddingCircles=configurationLayout.paddingCircles) {
 
         // update self
+        this.artboard = null;
         this.dataSource = data;
+        this.delimeter = configurationParse.delimeter;
         this.height = height;
         this.label = null;
         this.node = null;
@@ -25,6 +27,9 @@ class PackedCircles {
         // condition data
         this.dataFormatted = this.data;
         this.nodes = this.dataFormatted ? [...new Set(this.dataFormatted.leaves().map(d => this.extractLabel(d.data)))].sort((a,b) => a.toLowerCase().localeCompare(b.toLowerCase())) : null;
+
+        // using font size as the base unit of measure make responsiveness easier to manage across devices
+        this.artboardUnit = typeof window === "undefined" ? 16 : parseFloat(getComputedStyle(document.body).fontSize);
 
     }
 
@@ -41,7 +46,7 @@ class PackedCircles {
 
             // build hierarchy from flat data
             let hierarchy = stratify()
-                .parentId(d => d.id.substring(0, d.id.lastIndexOf(configurationParse.delimeter)));
+                .parentId(d => d.id.substring(0, d.id.lastIndexOf(this.delimeter)));
 
             // build nest
             let nestedData = hierarchy(this.dataSource)
@@ -80,7 +85,9 @@ class PackedCircles {
     configureLabels() {
         this.label
             .attr("class", "lgv-label")
+            .attr("data-node-label", d => this.extractLabel(d))
             .attr("data-node-depth", d => d.depth)
+            .attr("data-node-children", d => d.children ? true : false)
             .attr("x", d => d.x)
             .attr("y", d => d.children ? (d.y - (d.r * 0.9)) : d.y)
             .text(d => this.extractLabel(d));
@@ -97,7 +104,59 @@ class PackedCircles {
             .attr("data-node-children", d => d.children ? true : false)
             .attr("cx", d => d.x)
             .attr("cy", d => d.y)
-            .attr("r", d => d.r);
+            .attr("r", d => d.r)
+            .on("click", (e,d) => {
+
+                // node label
+                let label = this.extractLabel(d);
+
+                // update class
+                document.querySelectorAll(`[data-node-label="${label}"]`).forEach(d => d.classList.toggle("selected"));
+
+                // send event to parent
+                this.artboard.dispatch("nodeclick", {
+                    bubbles: true,
+                    detail: {
+                        label: label
+                    }
+                });
+
+            })
+            .on("mouseover", (e,d) => {
+
+                // node label
+                let label = this.extractLabel(d);
+
+                // update class
+                document.querySelectorAll(`[data-node-label="${label}"]`).forEach(d => d.classList.add("active"));
+
+                // send event to parent
+                this.artboard.dispatch("nodemouseover", {
+                    bubbles: true,
+                    detail: {
+                        label: label,
+                        xy: [e.clientX + (this.artboardUnit / 2), e.clientY + (this.artboardUnit / 2)]
+                    }
+                });
+
+            })
+            .on("mouseout", (e,d) => {
+
+                // node label
+                let label = this.extractLabel(d);
+
+                // update class
+                document.querySelectorAll(`[data-node-label="${label}"]`).forEach(d => d.classList.remove("active"));
+
+                // send event to parent
+                this.artboard.dispatch("nodemouseout", {
+                    bubbles: true,
+                    detail: {
+                        label: label
+                    }
+                });
+
+            });
     }
 
     /**
@@ -106,7 +165,7 @@ class PackedCircles {
      * @returns A string which represents the label for a node.
      */
     extractLabel(d) {
-        return d.id.split(configurationParse.delimeter)[d.id.split(configurationParse.delimeter).length - 1];
+        return d.id.split(this.delimeter)[d.id.split(this.delimeter).length - 1];
     }
 
     /**
@@ -144,7 +203,6 @@ class PackedCircles {
             .data(this.dataFormatted ? this.dataFormatted.descendants() : [])
             .enter()
             .append("circle");
-
     }
 
     /**
@@ -154,45 +212,19 @@ class PackedCircles {
     render(domNode) {
 
         // generate svg artboard
-        let artboard = this.generateArtboard(domNode);
+        this.artboard = this.generateArtboard(domNode);
 
         // generate nodes
-        this.node = this.generateNodes(artboard);
+        this.node = this.generateNodes(this.artboard);
 
         // position/style nodes
         this.configureNodes();
 
         // generate text label
-        this.label = this.generateLabels(artboard);
+        this.label = this.generateLabels(this.artboard);
 
         // position/style labels
         this.configureLabels();
-
-    }
-
-    /**
-     * Reset visualization to initial state.
-     */
-    reset() {
-
-        // reset nodes
-        this.node.attr("class", "lgv-node");
-
-        // reset labels
-        this.label.attr("class", "lgv-label");
-
-    }
-
-    /** Set nodes/labels to active state.
-     * @param {array} selected - each item is a string representing a node label
-     */
-    setActive(selected) {
-
-        // set node
-        this.node.attr("class", x =>  mouseOverIds(selected, this.dataSource).includes(x.id) ? "lgv-node active" : "lgv-node inactive");
-
-        // set labels
-        this.label.attr("class", x => mouseOverIds(selected, this.dataSource).includes(x.id) ? "lgv-label active" : "lgv-label inactive");
 
     }
 
